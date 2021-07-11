@@ -41,10 +41,10 @@ def Calculate(event):
         Userview.config(text="")
         Conclusion.config(text='8 or more characters')
 
-
 # copy
 def Copy(event):
     pyperclip.copy(password_coded)
+
 
 
 
@@ -64,10 +64,10 @@ Conclusion = Label(root)
 Conclusion.grid(row=3, column=1)
 # label for showing
 urlhere = Label(root)
-urlhere.config(text='URL Here:')
+urlhere.config(text = 'URL Here:')
 urlhere.grid(row=0, column=0)
 passwordhere = Label(root)
-passwordhere.config(text='Pasword Here:')
+passwordhere.config(text = 'Pasword Here:')
 passwordhere.grid(row=1, column=0)
 
 
