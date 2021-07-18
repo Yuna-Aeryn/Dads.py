@@ -3,15 +3,26 @@ from urllib.parse import urlparse
 import socket as s
 import pyperclip
 import numpy as np
+from decimal import *
+
+def is_square(apositiveint):
+  x = apositiveint // 2
+  seen = set([x])
+  while x * x != apositiveint:
+    x = (x + (apositiveint // x)) // 2
+    if x in seen: return False
+    seen.add(x)
+  return True
 
 # 기본 tkinter 배경
 root = Tk()
 root.title("Password Generator")
 
+
 # 계산 (변수가 개판인건 봐주세요)
 def Calculate(event):
     actualcodeinput = codeinput.get()
-    if len(actualcodeinput) >= 8:
+    if 8 <= len(actualcodeinput) <= 12:
         # URL에서 가져오는 userinput에서 내용을 가져오고 .com 형태로 바꾸기
         b = urlparse(Userinput.get()).netloc
         # www가 있다면 지우기
@@ -19,16 +30,18 @@ def Calculate(event):
             b = b[4:]
         # ip로 바꾸고 동시에 중간에 .을 지우기
         ip = s.gethostbyname(b).replace('.', '')
-        # 유니코드로 변환
+        # 패스워드 유니코드로 변환
         a = ""
         for letter in actualcodeinput:
             a = a + str(ord(letter))
         # 드디어 숫자로 곱하기
-        password_temp = np.multiply(float(ip), float(a))
+        password_temp = float(np.multiply(float(ip), float(a)))
         # 그 숫자를 float 형태로 바꾸고 뒤에 0이나 . 지우기
         password_temp = ("%.17f" % float(password_temp)).rstrip('0').rstrip('.')
         # 12자리로 자르기
-        password_temp = str(password_temp)[0:12]
+        if is_square(password_temp):
+            password_temp = str(password_temp + 1)
+        password_temp = str("%.12f" % Decimal(password_temp).sqrt())[-12:]
         # 실제 패스워드 변환과정 (이해하고 싶으면 부르셈, 좀 복잡해서 쓰기 귀찮음)
         global password_coded
         password_coded = "".join(
@@ -39,13 +52,12 @@ def Calculate(event):
         Conclusion.config(text=password_coded)
     else:
         Userview.config(text="")
-        Conclusion.config(text='8 or more characters')
+        Conclusion.config(text='8 to 12 characters')
+
 
 # copy
 def Copy(event):
     pyperclip.copy(password_coded)
-
-
 
 
 
@@ -67,7 +79,7 @@ urlhere = Label(root)
 urlhere.config(text = 'URL Here:')
 urlhere.grid(row=0, column=0)
 passwordhere = Label(root)
-passwordhere.config(text = 'Pasword Here:')
+passwordhere.config(text = 'Pasword Here \n (alphabets+numbers):')
 passwordhere.grid(row=1, column=0)
 
 
